@@ -10,7 +10,7 @@ from relationship_app.models import Author, Book, Library, Librarian
 def get_books_by_author(author_name):
     author = Author.objects.filter(name=author_name).first()
     if author:
-        books = Book.objects.filter(author= author)
+        books = Book.objects.filter(author=author)
 
         if books.exist():
             for book in books:
