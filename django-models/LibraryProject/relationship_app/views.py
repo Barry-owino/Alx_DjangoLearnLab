@@ -65,7 +65,7 @@ def admin_view(request):
 
 #custom permissions
 @login_required
-@permission_required('relationship_app.can_add_book', raise_exception=True)
+@permission_required('relationship_app.can_change_book', raise_exception=True)
 def edit_book(request, book_id):
     book = Book.objects.get(pk=book_id)
     if request.method == 'POST':
