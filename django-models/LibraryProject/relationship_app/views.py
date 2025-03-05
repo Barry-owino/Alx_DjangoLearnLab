@@ -18,15 +18,15 @@ from django.contrib.auth.forms import UserCreationForm
 
 @role_required('Admin')
 def admin_view(request):
-    return render(request, 'admin_dashboard.html')
+    return render(request, 'relationship_app/admin_dashboard.html')
 
 @role_required('Librarian')
 def librarian_view(request):
-    return render(request, 'librarian_dashboard.html')
+    return render(request, 'relationship_app/librarian_dashboard.html')
 
 @role_required('Member')
 def member_view(request):
-    return render(request, 'member_dashboard.html')
+    return render(request, 'relationship_app/member_dashboard.html')
 
 def login_view(request):
     if request.method == 'POST':
