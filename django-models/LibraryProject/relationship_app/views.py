@@ -18,8 +18,8 @@ from django.contrib.auth.forms import UserCreationForm
 # Create your views here.
 
 @role_required('Admin')
-def admin_dashboard(request):
-    return render(request, 'relationship_app/admin_dashboard.html')
+def admin_view(request):
+    return render(request, 'admin_dashboard.html')
 
 @role_required('Librarian')
 def librarian_view(request):
