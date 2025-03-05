@@ -7,6 +7,7 @@ from .decorators import role_required
 #from django.contrib.auth import login, authenticate
 #from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LogoutView
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import Book
 from .models import Library
@@ -17,7 +18,7 @@ from django.contrib.auth.forms import UserCreationForm
 # Create your views here.
 
 @role_required('Admin')
-def admin_view(request):
+def admin_dashboard(request):
     return render(request, 'relationship_app/admin_dashboard.html')
 
 @role_required('Librarian')
@@ -27,6 +28,14 @@ def librarian_view(request):
 @role_required('Member')
 def member_view(request):
     return render(request, 'relationship_app/member_dashboard.html')
+
+def is_admin(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+
+@login_required
+@user_passes_test(is_admin, login_url='/login/')
+def admin_view(request):
+    return render(request, 'admin_dashboard.html')
 
 def login_view(request):
     if request.method == 'POST':

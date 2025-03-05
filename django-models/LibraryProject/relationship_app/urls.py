@@ -16,7 +16,7 @@ urlpatterns = [
         path('register/', views.register, name='register'),
 
         path('admin/dashboard/', admin_view, name='admin-dashboard'),
-        path('librarian/dashboard/', librarian_view, name='librarian-view'),
-        path('member/dashboard/', member_view, name='member-view'),
+        path('librarian/dashboard/', librarian_view, name='librarian-dashboard'),
+        path('member/dashboard/', member_view, name='member-dashboard'),
 
 ]
