@@ -16,7 +16,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Book
 from .models import Library
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 
 from .forms import BookForm
