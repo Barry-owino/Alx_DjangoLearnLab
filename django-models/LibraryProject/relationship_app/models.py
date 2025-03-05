@@ -37,6 +37,15 @@ class Author(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="book")
+    publication_date = models.DateField()
+
+    class Meta:
+        #def custom permissions
+        permissions = [
+                ("can_add_book", "Can add a nee book"),
+                ("can_change_book", "Can modify existing book details"),
+                ("can_delete_book", "Can delete a book from the library")
+        ]
 
     def __str__(self):
         return self.title

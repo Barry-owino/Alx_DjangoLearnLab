@@ -1,8 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic import CreateView
 
 from .decorators import role_required
+
+#import { render, redirect } from 'django-shortcuts';
+#from { login_required, permissions_required } from 'django-contrib-auth-decorators';
+
 
 #from django.contrib.auth import login, authenticate
 #from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -11,11 +15,32 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import Book
 from .models import Library
+
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib import messages
+
+from .forms import BookForm
 #from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 
 
 # Create your views here.
+@login_required
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            book = form.save(commit=False)
+            book.created_by = request.user
+            book.save()
+            messages.success(request, 'Book added successfully.')
+            return redirect('book_list')
+    else:
+        form = BookForm()
+    return render(request, 'add_book.html', {'form': form})
+
+
 
 @role_required('Admin')
 def admin_view(request):
@@ -37,6 +62,27 @@ def is_admin(user):
 def admin_view(request):
     return render(request, 'admin_dashboard.html')
 
+#custom permissions
+@login_required
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def edit_book(request, book_id):
+    book = Book.objects.get(pk=book_id)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'edit_book.html', {'form': form})
+
+@login_required
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, book_id):
+    book = Book.objects.get(pk=book_id)
+    book.delete()
+    return redirect('book_list')
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -50,7 +96,8 @@ def login_view(request):
     return render(request, 'registration/login.html', {'form': form})
 
 
-
+@login_required
+#need to cumback and list_books/book_list
 def list_books(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
