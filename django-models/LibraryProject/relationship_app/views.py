@@ -98,10 +98,10 @@ def login_view(request):
 
 
 @login_required
-#need to cumback and list_books/book_list
+#need to cumback and list_books/book_list/this error neeed to fixed
 def list_books(request):
     books = Book.objects.all()
-    return render(request, 'relationship_app/list_books.html', {'books': books})
+    return render(request, 'relationship_app/book_list.html', {'books': books})
 
 def register(request):
     if request.method == 'POST':
