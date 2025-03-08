@@ -15,7 +15,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(username, password, date_of_birth, profile_photo, **extra-fields)
+        return self.create_user(username, password, date_of_birth, profile_photo, **extra_fields)
 
 #customUser  model
 class CustomUser(AbstractUser):
