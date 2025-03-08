@@ -30,7 +30,6 @@ from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 
-"""
 @login_required
 @permission_required('relationship_app.can_add_book', raise_exception=True)
 def add_book(request):
@@ -44,8 +43,7 @@ def add_book(request):
             return redirect('book_list')
     else:
         form = BookForm()
-return render(request, 'add_book.html', {'form': form})"""
-"""
+    return render(request, 'add_book.html', {'form': form})
 
 @permission_required('relationship_app.can_add_book', raise_exception=True)
 def add_book(request):
@@ -99,7 +97,7 @@ def is_admin(user):
 @user_passes_test(is_admin, login_url='/login/')
 def admin_view(request):
     return render(request, 'admin_dashboard.html')
-"""
+
 #custom permissions
 @login_required
 @permission_required('relationship_app.can_change_book', raise_exception=True)
@@ -112,10 +110,9 @@ def edit_book(request, book_id):
             return redirect('book_list')
     else:
         form = BookForm(instance=book)
-   return render(request, 'edit_book.html', {'form': form})
+    return render(request, 'edit_book.html', {'form': form})
 
-"""                  
-"""
+
 @login_required
 @permission_required('relationship_app.can_delete_book', raise_exception=True)
 def delete_book(request, book_id):
@@ -134,14 +131,13 @@ def login_view(request):
     else:
        form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
-"""
-"""
+
 @login_required
 #need to cumback and list_books/book_list/this error neeed to fixed
 def list_books(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/book_list.html', {'books': books})
-"""
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
