@@ -49,6 +49,10 @@ SECURE_HSTS_SECONDS = 31536000 #enforces HTTPS for one year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
+SECURE_SSL_REDIRECT = True  #Redirect all HTTP request to HTTPS
+
+
+
 ########end of security#####
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
