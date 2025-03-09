@@ -33,8 +33,8 @@ X_FRAME_OPTIONS = "DENY" #prevents clickjacking by blocking iframe embedding
 SECURE_CONTENT_TYPE_NOSNIFF = True #prevents NIME-sniffing attacks
 
 #enforcing secure coockies
-CSRF_COOKIES_SECURE = True #CSRF cookies sent only over HTTPS
-SESSION_COOKIES_SECURE = True #Sessions are only sent over HTTPS
+CSRF_COOKIE_SECURE = True #CSRF cookies sent only over HTTPS
+SESSION_COOKIE_SECURE = True #Sessions are only sent over HTTPS
 
 #Content Security cookies (CSP) -Prevents inline script
 CSP_DEFAUTL_SRC = ("'self'",) #load contentonly from the same origin
