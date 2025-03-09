@@ -1,8 +1,21 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
+from .forms import ExampleForm
 from .models import Book
 
-# Create your views here.
+#added the form to the views
+def example_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Process the form data
+            form.save()
+    else:
+        form = ExampleForm()
+
+    return render(request, 'bookshelf/form_example.html', {'form': form})
+
+#search class
 def search_books(request):
     search_term = request.GET.get("query", "")
     books = Book.objects.filter(Q(title__incontains=search_term))
