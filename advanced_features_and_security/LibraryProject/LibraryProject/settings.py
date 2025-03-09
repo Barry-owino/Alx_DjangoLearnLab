@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +24,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&qnc5v5%)%sc)e-dhv59+*ld8gjkol-)^hobt_urm%2_$1y3a#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+
+#preventing xss and click jacking
+SECURE_BROWSER_XSS_FILTER = True #enables X-XXS-Protection header
+X_FRAME_OPTIONS = "DENY" #prevents clickjacking by blocking iframe embedding
+SECURE_CONTENT_TYPE_NOSNIFF = True #prevents NIME-sniffing attacks
+
+#enforcing secure coockies
+CSRF_COOKIES_SECURE = True #CSRF cookies sent only over HTTPS
+SESSION_COOKIES_SECURE = True #Sessions are only sent over HTTPS
+
+#Content Security cookies (CSP) -Prevents inline script
+CSP_DEFAUTL_SRC = ("'self'",) #load contentonly from the same origin
+CSP_SCRIPT_SRC = ("'self'",) #Restricts javascript execution
+CSP_STYLE_SRC = ("'self'","'unsafe-inline'") #Restricts CSS sources
+
+#Ensure allowed hosts are explicitly defined
+ALLOWED_HOSTS = ['yourdomain.com', '127.0.0.1']
+
+#Set HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000 #enforces HTTPS for one year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+########end of security#####
+
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+
 
 
 # Application definition
@@ -41,6 +68,8 @@ INSTALLED_APPS = [
     'relationship_app',
 ]
 
+INSTALLED_APPS += ["csp"]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,6 +79,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE += ["csp.middleware.CSPMiddleware",]
+
 
 ROOT_URLCONF = 'LibraryProject.urls'
 

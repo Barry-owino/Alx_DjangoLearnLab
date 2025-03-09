@@ -3,6 +3,10 @@ from django.contrib.auth.decorators import permission_required
 from .models import Book
 
 # Create your views here.
+def search_books(request):
+    search_term = request.GET.get("query", "")
+    books = Book.objects.filter(Q(title__incontains=search_term))
+    return render(request, "bookshelf/book_list.html", {"books": books})
 
 @permission_required('bookshelf.com_view', raise_exception=True)
 def book_list(request):
