@@ -21,6 +21,7 @@ class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Book.objects.all()
     serializer_classs = BookSerializer
+    permission_classes = [permissions.IsAdminUser]
 
     def get_permissions(self):
         if self.request.method == 'GET':
