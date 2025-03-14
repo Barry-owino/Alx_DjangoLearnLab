@@ -1,35 +1,60 @@
-#from django.shortcuts import render
+# api/views.py
 from rest_framework import generics, permissions
-from .models import Book, Author
-from .serializers import BookSerializer, AuthorSerializer
+from .models import Book
+from .serializers import BookSerializer
+from datetime import datetime
+from rest_framework.response import Response
+from rest_framework import status
 
-# Create your views here.
-class BookListCreateView(generics.ListCreateAPIView):
-    # Handles: GET:List all books-public access, POST:create new book-authenticated users only
-
+class BookListView(generics.ListAPIView):
+    """
+    GET: List all books (public access)
+    """
     queryset = Book.objects.all()
-    serializers_class = BookSerializer
+    serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [permissions.Allowany()]
-        return [permissions.IsAuthenticated()]
-
-class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-
-    #-GET:Retrieve single book, PUT/PATCH:Update book-authenticated, DELETE:Remove book-authenticared
-
+class BookDetailView(generics.RetrieveAPIView):
+    """
+    GET: Retrieve single book by ID (public access)
+    """
     queryset = Book.objects.all()
-    serializer_classs = BookSerializer
-    permission_classes = [permissions.IsAdminUser]
+    serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
+    lookup_field = 'pk'
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [permissions.Allowany()]
-        return [permissions.IsAuthenticated()]
-
-class AuthorListCreateView(generics.ListCreateAPIView):
-    #similar config for Author model
-    querset = Author.objects.all()
-    serializer_class = AuthorSerializer
+class BookCreateView(generics.CreateAPIView):
+    """
+    POST: Create new book (authenticated users only)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # Custom validation example
+        publication_year = serializer.validated_data.get('publication_year')
+        if publication_year > datetime.now().year:
+            return Response(
+                {"error": "Future publication dates not allowed"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer.save()
+
+class BookUpdateView(generics.UpdateAPIView):
+    """
+    PUT/PATCH: Update existing book (authenticated users only)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'pk'
+
+class BookDeleteView(generics.DestroyAPIView):
+    """
+    DELETE: Remove book (authenticated users only)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'pk'
