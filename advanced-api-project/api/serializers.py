@@ -17,7 +17,7 @@ class BookSerializer(serializers.ModelSerializer):
 
 class AuthorSerializer(serializers.ModelSerializer):
     #serializes Author model data with nested book relationships includes -name field -nested BookSerializer for related book
-    books = BookSerializer(many=True, read_only=True, source='book')
+    books = BookSerializer(many=True, read_only=True)
 
     class Meta:
         model = Author
