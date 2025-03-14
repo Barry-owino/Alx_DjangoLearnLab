@@ -9,7 +9,7 @@ from datetime import datetime
 from rest_framework.response import Response
 from rest_framework import status
 
-class BookListCreateView(generics.ListCreateAPIView):
+class BookListView(generics.ListCreateAPIView):
     """
     GET: List books with filtering, search, and ordering
     - Filter by: title, author ID, publication year ranges
