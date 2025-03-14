@@ -1,37 +1,26 @@
 from rest_framework import generics, permissions
 from .models import Book
 from .serializers import BookSerializer
-from datetime import datetime
-from rest_framework.response import Response
-from rest_framework import status
 
 class BookListCreateView(generics.ListCreateAPIView):
     """
-    GET: List all books (public)
-    POST: Create new book (authenticated)
+    Handles listing all books and creating a new book.
+    Read access is open to all, but creation requires authentication.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-
+    
     def get_permissions(self):
-        if self.request.method == 'GET':
-            return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated()]
+        return []
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET: Retrieve book (public)
-    PUT: Full update (authenticated)
-    PATCH: Partial update (authenticated)
-    DELETE: Remove book (authenticated)
+    Handles retrieving, updating, and deleting a single book.
+    Only authenticated users can modify or delete a book.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
