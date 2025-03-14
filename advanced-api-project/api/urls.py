@@ -1,16 +1,13 @@
 from django.urls import path
 from .views import (
     BookListCreateView,
-    BookRetrieveUpdateDestroyView,
-    AuthorListCreateView
+    BookRetrieveUpdateDestroyView
 )
 
 urlpatterns = [
-    # Book endpoints
+    # Combined list/create endpoint
     path('books/', BookListCreateView.as_view(), name='book-list-create'),
-    path('books/<int:pk>/', BookRetrieveUpdateDestroyView.as_view(), 
-         name='book-detail'),
     
-    # Author endpoints
-    path('authors/', AuthorListCreateView.as_view(), name='author-list-create'),
+    # Combined detail/update/delete endpoint
+    path('books/<int:pk>/', BookRetrieveUpdateDestroyView.as_view(), name='book-detail'),
 ]
