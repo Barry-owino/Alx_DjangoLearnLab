@@ -12,7 +12,7 @@ class BookSerializer(serializers.ModelSerializer):
         #ensure publication year is not in the future
         current_year = datetime.now().year
         if value > current_year:
-            raise serializers.ValidateinError(f"Publication year cannot be in the future (max {current_year})")
+            raise serializers.ValidationError(f"Publication year cannot be in the future (max {current_year})")
         return value
 
 class AuthorSerializer(serializers.ModelSerializer):
