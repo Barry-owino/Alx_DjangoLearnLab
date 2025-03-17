@@ -13,3 +13,7 @@ class ProfileForm(form.ModelForm):
     class Meta:
         model = User
         fields = ["username", "email", "first_name", "last_name"]
+    
+    bio = forms.CharField(widget=forms.Textarea, required=False)
+    profile_picture = forms.ImageField(required=False)
+
