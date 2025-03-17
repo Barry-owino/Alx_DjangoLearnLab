@@ -19,10 +19,15 @@ def register_view(request):
 @login_required
 def profile_view(request):
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=request.user)
-        if form.is_valid();
-        form.save()
-        return redirect('profile')
+        user_form = ProfileForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST,request.FILES, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.isvalid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile')
     else:
-        form = ProfileForm(instance=request.user)
-    return render(request, 'blog/profile.html', {'form': form})
+        user_form = ProfileForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+
+    return render(request, 'blog/profile.html', {'form': form, 'profile_form': profile_form})
