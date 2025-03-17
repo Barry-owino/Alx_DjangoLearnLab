@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm, ProfileForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView #implementing CRUD on blog post
-from django.contrib.auth.maxins import LoginRequiredMaxin, UserPassesTestMixin #mixins to control access to views
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #mixins to control access to views
 from .models import Post
 
 
@@ -73,5 +73,5 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         post = self.get_object()
-        return self.return.user == post.author
+        return self.request.user == post.author
 
