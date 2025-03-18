@@ -5,7 +5,7 @@ from .forms import RegisterForm, ProfileForm, CommentForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView #implementing CRUD on blog post
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #mixins to control access to views
 from .models import Post, Comment
-
+from django.db.models import Q
 
 # Create your views here.
 
@@ -100,3 +100,12 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return self.request.user == comment.author
+
+#tags and search view
+class SearchResultsView(ListView):
+    models = Post
+    template_name = 'blog/search_results.html'
+
+    def get_querset(self):
+        query = self.request.GET.get('q')
+        return Post.objects.filter(Q(title__icontains=query) | Q(content__icontains=query)| Q(tags__name__icontains=query)).distinct()
