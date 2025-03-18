@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, ProfileForm
+from .forms import RegisterForm, ProfileForm, CommentForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView #implementing CRUD on blog post
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #mixins to control access to views
 from .models import Post, Comment
