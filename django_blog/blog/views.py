@@ -109,3 +109,11 @@ class SearchResultsView(ListView):
     def get_querset(self):
         query = self.request.GET.get('q')
         return Post.objects.filter(Q(title__icontains=query) | Q(content__icontains=query)| Q(tags__name__icontains=query)).distinct()
+
+class TaggedPostView(ListView):
+    model = Post
+    templates_name = 'blog/tagged_posts.html'
+
+    def get_queryset(self):
+        return Post.objects.filter(tags__slug=self.kwargs.get('slug'))
+
