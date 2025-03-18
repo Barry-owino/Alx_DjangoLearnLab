@@ -1,0 +1,32 @@
+<div class="comments-section">
+    <h3>Comments ({{ post.comments.count }})</h3>
+    
+    {% if user.is_authenticated %}
+    <div class="comment-form">
+        <form method="POST" action="{% url 'comment-create' post.id %}">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Post Comment</button>
+        </form>
+    </div>
+    {% endif %}
+
+    {% for comment in post.comments.all %}
+    <div class="comment">
+        <div class="comment-header">
+            <strong>{{ comment.author.username }}</strong>
+            <span class="date">{{ comment.created_at|timesince }} ago</span>
+            {% if comment.author == user %}
+            <div class="comment-actions">
+                <a href="{% url 'comment-update' comment.id %}">Edit</a>
+                <a href="{% url 'comment-delete' comment.id %}">Delete</a>
+            </div>
+            {% endif %}
+        </div>
+        <p>{{ comment.content }}</p>
+        {% if comment.updated_at != comment.created_at %}
+        <small>Edited {{ comment.updated_at|timesince }} ago</small>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
