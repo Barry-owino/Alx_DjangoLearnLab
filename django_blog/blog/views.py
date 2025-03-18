@@ -12,7 +12,7 @@ from .models import Post
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
-        if forms.is_valid():
+        if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('post_list')
