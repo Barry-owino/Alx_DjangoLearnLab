@@ -22,8 +22,11 @@ class ProfileForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']
-        widgets = {'content': forms.Textarea(attrs={'rows': 8}), 'tags': TagWidget(attrs={'class': 'tag-input'}),}
+        fields = ['title', 'content', 'tags']  # Ensure tags is included
+        widgets = {
+            'tags': TagWidget(),  # Add this widget configuration
+            'content': forms.Textarea(attrs={'rows': 8}),
+        }
 
 #comment form
 class CommentForm(forms.ModelForm):
