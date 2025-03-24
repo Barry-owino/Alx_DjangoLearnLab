@@ -7,7 +7,7 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 
 # Create your views here.
-class ReisterView(APIView):
+class RegisterView(APIView):
     permission_class = [AllowAny]
 
     def post(self, request):
