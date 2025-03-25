@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions, status
-#from django.shortcuts import render
+from .models import CustomUser
+from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -46,3 +47,8 @@ class UnfollowUserView(generics.GenericAPIView):
         user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
         request.user.following.remove(user_to_unfollow)
         return Response({'message': 'You have unfollow this user.'}, status=status.HTTP_200_OK)
+
+class ListUsersView(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
