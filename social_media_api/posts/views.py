@@ -31,6 +31,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing comments.
     """
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
