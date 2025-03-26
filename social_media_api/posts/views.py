@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions, generics, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Post, Comment, Like
-from .serializers import PostSerializer, CommentSerializer, LikeSerializer
+from .serializers import PostSerializer, CommentSerializer, LikeSerializer, CustomUserSerializer
 from notifications.models import Notification
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -17,6 +17,21 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         # Write permissions are only allowed for the author of the post or comment.
         return obj.author == request.user
 
+class FollowUserView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, user_id):
+        user_to_follow = get_object_or_404(CustomUser, id=user_id)
+        request.user.following.add(user_to_follow)
+        return Response({"message": "You are now following this user."}, status=status.HTTP_200_OK)
+
+class UnfollowUserView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, user_id):
+        user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
+        request.user.following.remove(user_to_unfollow)
+        return Response({"message": "You have unfollowed this user."}, status=status.HTTP_200_OK)
 
 class PostViewSet(viewsets.ModelViewSet):
     """
@@ -58,16 +73,11 @@ class FeedView(generics.ListAPIView):
         following_users = self.request.user.following.all()
         return Post.objects.filter(author__in=following_users).order_by('-create_at')
 
-class ListUsersView(generics.ListAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
 class LikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, post_id):
-        post = get_object_or_404(Post, id=post_id)
+        post = get_object_or_404(Post, pk=pk)
         like, created = Like.objects.get_ot_create(user=request.user, post=post)
 
         if created:
