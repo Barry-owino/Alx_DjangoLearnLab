@@ -1,6 +1,9 @@
-from rest_framework import viewsets, permissions, generics
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from rest_framework import viewsets, permissions, generics, status
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from .models import Post, Comment, Like
+from .serializers import PostSerializer, CommentSerializer, LikeSerializer
+from notifications.models import Notification
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
@@ -54,3 +57,29 @@ class FeedView(generics.ListAPIView):
     def get_query(self):
         following_users = self.request.user.following.all()
         return Post.objects.filter(author__in=following_users).order_by('-create_at')
+
+class LikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id)
+        like, created = Like.objects.get_ot_create(user=request.user, post=post)
+
+        if created:
+            Notification.objects.create(recipient=post.author, actor=request.user, verb='liked', target=post)
+            return Response({'message': 'Post liked.'}, status=status.HTTP_201_CREATE)
+        else:
+            return Response({'message': 'You already liked this post.'}, status=status.HTTP_404_BAD_REQUEST)
+
+class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id)
+        like = Like.objects.filter(user=request.user, post=post)
+
+        if like.exists():
+            like.delete
+            return Response({'message': 'Post unliked.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'You have not liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
