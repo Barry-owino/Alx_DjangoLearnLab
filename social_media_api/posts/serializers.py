@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Post, Comment
-from django.contrib.auth import grt_user_model
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -18,7 +18,7 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = ['author', 'created_at', 'updated_at']
 
 class PostSerializer(serializers.ModelSerializer):
-    author = UseSerializer(read_only=True)
+    author = UserSerializer(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
