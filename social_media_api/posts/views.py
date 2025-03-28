@@ -1,6 +1,7 @@
 #from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 from .models import Post, Comment
+from accounts.models import CustomUser
 from .serializers import PostSerializer, CommentSerializer
 #from .permissions import IsOwnerOrReadOnly
 
@@ -26,4 +27,15 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_created(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class UserFeedView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        followed_users = user.following.all()  # Get users the current user follows
+        posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')  # Filter posts
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
