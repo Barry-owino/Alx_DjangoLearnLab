@@ -46,13 +46,17 @@ class LikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
+        """Like a post and create a notification."""
         post = get_object_or_404(Post, pk=pk)
         user = request.user
 
-        if Like.objects.filter(user=user, post=post).exists():
-            return Response({"detail": "You have already liked this post."}, status=400)
+        # Check if the user has already liked the post
+        like, created = Like.objects.get_or_create(user=user, post=post)
 
-        Like.objects.create(user=user, post=post)
+        if not created:
+            return Response({"detail": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a notification for the post author
         Notification.objects.create(
             recipient=post.author,
             actor=user,
@@ -60,35 +64,23 @@ class LikePostView(APIView):
             target=post
         )
 
-        return Response({"detail": "Post liked successfully."}, status=201)
+        return Response({"detail": "Post liked successfully."}, status=status.HTTP_201_CREATED)
+
 
 class UnlikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
+        """Unlike a post if the user has previously liked it."""
         post = get_object_or_404(Post, pk=pk)
         user = request.user
 
         like = Like.objects.filter(user=user, post=post)
         if not like.exists():
-            return Response({"detail": "You have not liked this post."}, status=400)
+            return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
 
         like.delete()
-        return Response({"detail": "Post unliked successfully."}, status=200)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return Response({"detail": "Post unliked successfully."}, status=status.HTTP_200_OK)
 
 
 
