@@ -42,12 +42,12 @@ class UserFeedView(generics.GenericAPIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
-class LikePostView(APIView):
+class LikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
         """Like a post and create a notification."""
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         user = request.user
 
         # Check if the user has already liked the post
@@ -67,12 +67,12 @@ class LikePostView(APIView):
         return Response({"detail": "Post liked successfully."}, status=status.HTTP_201_CREATED)
 
 
-class UnlikePostView(APIView):
+class UnlikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
         """Unlike a post if the user has previously liked it."""
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         user = request.user
 
         like = Like.objects.filter(user=user, post=post)
